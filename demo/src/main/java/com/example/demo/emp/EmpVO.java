@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpVO {
-	int employeeId; //integer면 null값인지 체크가능(참조타입이라)
+	int employeeId; //int는 null값 체크 X
 	String firstName;
 	String lastName;
 	String email;
 	Date hireDate;
-	Integer salary;
+	Integer salary; //integer면 null값인지 체크가능(참조타입이라)
 	String jobId;
 	String departmentId;
 	String managerId;

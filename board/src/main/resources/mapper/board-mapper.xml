@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.board.mapper.BoardMapper">
+	<!-- 동적쿼리 -->
+	<sql id="condition">
+		<where>
+			<if test="vo.title != null">
+				title LIKE = '%#{vo.title}%'
+			</if>
+			<if test="vo.content != null">
+				content LIKE = '%#{vo.content}%'
+			</if>
+			<if test="vo.writer != null">
+				writer LIKE = '%#{vo.writer}%'
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 게시글 검색(+페이징) -->
+<!-- 	<select id="getBoardList" resultType="BoardVO">
+	SELECT r.*
+	FROM (
+		SELECT ROWNUM AS rn, b.* 
+		FROM(
+			SELECT board_no
+				 , title
+				 , content
+				 , writer
+				 , write_date
+				 , click_cnt
+				 , image
+			FROM board
+			<include refid="condition"></include>
+			ORDER BY board_no ) b
+		)r
+	WHERE rn BETWEEN #{svo.start} AND #{svo.end}
+	</select> -->
+	
+	<select id="getBoardList" resultType="BoardVO">
+		SELECT * FROM ( SELECT ROWNUM AS rn, a.* FROM (
+			SELECT board_no
+				 , title
+				 , content
+				 , writer
+				 , write_date
+				 , click_cnt
+				 , image
+			FROM board
+			<include refid="condition"></include>
+			ORDER BY board_no
+	<![CDATA[ ) a WHERE ROWNUM <= #{svo.end} ) b WHERE rn >= #{svo.start} ]]>
+	</select>
+
+	<!-- 단건조회 -->
+	<select id="getBoardInfo" parameterType="int" resultType="BoardVO">
+		SELECT *
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+
+	<!-- 등록 -->
+	<insert id="insertBoard" parameterType="BoardVO">
+		<selectKey keyProperty="boardNo"
+				   order="BEFORE"
+				   resultType="int">
+			SELECT board_seq.nextval FROM dual
+		</selectKey>
+		INSERT INTO board ( board_no
+						   , title
+						   , content
+						   , writer
+						   , write_date
+						   , click_cnt
+						   , image
+						  )
+		VALUES( #{boardNo}
+			  , #{title}
+			  , #{content}
+			  , #{write_date}
+			  , #{click_cnt}
+			  , #{image}
+			  )
+	</insert>
+	
+	<!-- 수정 -->
+	<update id="updateBoard" parameterType="BoardVO">
+		UPDATE board
+		SET content = #{content}
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM board
+		WHERE board_no = #{boardNo}
+	</delete>
+	
+</mapper>

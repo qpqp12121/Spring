@@ -14,10 +14,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@SpringBootTest
+@SpringBootTest //단위테스트
 public class EmpMapperTest {
 
-	@Autowired EmpMapper mapper;
+	@Autowired EmpMapper mapper; //mapper 사용시 선언
 	@Test	
 	//페이징처리함
 	public void 사원전체조회() {
@@ -48,14 +48,14 @@ public class EmpMapperTest {
 		
 	}
 	
-//	@Test
-//	public void 사원단건조회() {
-//		int employeeId = 100;
-//		EmpVO vo = mapper.getEmpInfo(employeeId); //employeeId변수
-//		System.out.println(vo);
+	@Test
+	public void 사원단건조회() {
+		int employeeId = 100;
+		EmpVO vo = mapper.getEmpInfo(employeeId); //employeeId변수
+		System.out.println(vo);
 //		assertEqual(employeeId, vo.getEmployeeId());
 	
-//	}
+	}
 	
 //	@Test
 //	public void 사원등록() {
@@ -79,9 +79,9 @@ public class EmpMapperTest {
 	
 /* 위 내용 lombok의 builder 기능 사용하기 
    EmpVO파일에 @Builder @NoArgsConstructor @AllArgsConstructor 적고 */
-	@Test
+	//@Test
 	public void 사원등록() {
-		//vo객체 생성
+		//vo객체 생성 
 		EmpVO vo = EmpVO.builder()
 				   //.employeeId(301)
 				   .firstName("aaa")
