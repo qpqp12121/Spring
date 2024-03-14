@@ -22,6 +22,8 @@ public interface EmpMapper {
 	//등록
 	int insertEmp(EmpVO empVO); //insert returnType 2가지( int, void )
 	
+	//수정
+	
 	//삭제
 	int deleteEmp(int employeeId);
 	

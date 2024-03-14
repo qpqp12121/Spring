@@ -52,7 +52,7 @@
 			 , DEPARTMENT_ID
 		FROM employees e
 		<include refid="condition"></include>
-		ORDER BY first_name
+		ORDER BY employee_id desc
 		
 	<![CDATA[ ) a WHERE ROWNUM <= #{svo.end} ) b WHERE rn >= #{svo.start} ]]>
 	</select>
@@ -83,7 +83,8 @@
 		   , JOB_ID
 		 <if test="salary != null">,SALARY</if>
 		   , MANAGER_ID
-		   , DEPARTMENT_ID)
+		   , DEPARTMENT_ID
+		   , PHOTO)
 		VALUES(
 		  #{employeeId}
 		  , #{firstName}
@@ -94,8 +95,16 @@
 		 <if test="salary != null">, #{salary}</if>
 		  , #{managerId}
 	      , #{departmentId}
+	      , #{photo}
 		)
 	</insert>
+
+<!-- 수정 -->
+<!-- 	<update id="updateEmp" parameterType="EmpVO">
+		UPDATE employees
+		SET content = #{content}
+		WHERE board_no = #{boardNo}
+	</update> -->
 	
 <!-- 삭제 -->	
 	<delete id="deleteEmp" parameterType="int">

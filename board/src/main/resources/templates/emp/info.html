@@ -12,18 +12,12 @@
 			<th>first_name</th>
 			<th>last_name</th>
 		</tr>
-		<tr th:each="emp : ${empList}">
+		<tr>
 			<td th:text="${emp.employeeId}"></td>
 			<td th:text="${emp.firstName}"></td>
 			<td th:text="${emp.lastName}"></td>
 			<td th:text="${emp.hireDate}"></td>
-			<td><button onclick="deleteBtn" type="button">삭제</button></td>
 		</tr>
-		
 	</table>
 </body>
 </html>
-
-<script>
-
-</script>

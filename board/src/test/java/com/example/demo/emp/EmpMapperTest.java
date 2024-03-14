@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class EmpMapperTest {
 
 	@Autowired EmpMapper mapper; //mapper 사용시 선언
-	@Test	
+	//@Test	
 	//페이징처리함
 	public void 사원전체조회() {
 		EmpVO vo = new EmpVO();
@@ -48,7 +48,7 @@ public class EmpMapperTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void 사원단건조회() {
 		int employeeId = 100;
 		EmpVO vo = mapper.getEmpInfo(employeeId); //employeeId변수
@@ -79,14 +79,14 @@ public class EmpMapperTest {
 	
 /* 위 내용 lombok의 builder 기능 사용하기 
    EmpVO파일에 @Builder @NoArgsConstructor @AllArgsConstructor 적고 */
-	//@Test
+	@Test
 	public void 사원등록() {
 		//vo객체 생성 
 		EmpVO vo = EmpVO.builder()
 				   //.employeeId(301)
 				   .firstName("aaa")
 				   .lastName("bbb")
-				   .email("aaa@naver.com")
+				   .email("ㅇㅇㅇ@naver.com")
 				   .hireDate(new Date())
 				   .jobId("IT_PROG")
 				   .build();

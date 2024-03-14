@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.demo.board.mapper.BoardMapper;
 
+@SpringBootTest
 public class BoardMapperTest {
 	@Autowired BoardMapper mapper; //mapper 사용
 	
@@ -18,9 +20,12 @@ public class BoardMapperTest {
 					.title("첫")
 					.content("열심")
 					.writer("홍")
+				/*
+				 * .write_date('2024') .click_cnt .image
+				 */
 					.build();
 		
-		SearchVO svo = new SearchVO();
+		NumVO svo = new NumVO();
 		
 		List<BoardVO> list = mapper.getBoardList(vo, svo);
 		
@@ -38,7 +43,7 @@ public class BoardMapperTest {
 		System.out.println(vo);
 	}
 	
-	//@Test
+	@Test
 	public void 게시글등록() {
 		BoardVO vo = BoardVO.builder()
 					.title("테스트")
