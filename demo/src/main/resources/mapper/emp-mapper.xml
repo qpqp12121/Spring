@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.emp.mapper.EmpMapper">
+
+<!-- 동적쿼리 -->
+<sql id="condition">
+	<where>
+		<if test="vo.departmentId != null">				
+			DEPARTMENT_ID = #{vo.departmentId}
+		</if>
+		<if test="vo.firstName != null">
+			AND first_name = #{vo.firstName}
+		</if>
+		<if test="vo.managerId != null">
+			AND manager_id = #{vo.managerId}
+		</if>
+		<if test="svo.employeeIds != null">
+			AND employee_id 
+		 <foreach collection="svo.employeeIds"
+		 		  item="empid"
+		          open="in (" 
+		          close=")" 
+		          separator="," >
+		 	#{empid}
+		 </foreach>
+		</if>		
+	</where>
+</sql>
+
+<resultMap type="EmpVO" id="empResultMap">
+	<id property="employeeId" column="EMPLOYEE_ID"></id>
+	<result property="firstName" column="FIRST_NAME" />
+	<result property="phone" column="PHONE_NUMBER" />
+	<result property="comm" column="COMMISSION_PCT" />		
+</resultMap>
+
+	<select id="getEmpList" resultType="EmpVO">
+	SELECT * FROM ( SELECT ROWNUM AS rn, a.* FROM (
+	
+		SELECT EMPLOYEE_ID
+			 , FIRST_NAME
+			 , LAST_NAME
+			 , EMAIL
+			 , PHONE_NUMBER
+			 , HIRE_DATE
+			 , JOB_ID
+			 , SALARY
+			 , COMMISSION_PCT
+			 , MANAGER_ID
+			 , DEPARTMENT_ID
+		FROM employees e
+		<include refid="condition"></include>
+		ORDER BY employee_id
+		
+	<![CDATA[ ) a WHERE ROWNUM <= #{svo.end} ) b WHERE rn >= #{svo.start} ]]>
+	</select>
+
+
+
+
+<!-- 단건조회 -->
+	<select id="getEmpInfo" parameterType="int" resultType="EmpVO">
+		SELECT *
+		FROM employees
+		WHERE employee_id = #{employeeId}
+	</select>
+	
+<!-- 등록 -->
+	<insert id="insertEmp" parameterType="EmpVO">
+		<selectKey keyProperty="employeeId"
+				   order="BEFORE"
+				   resultType="int">
+			SELECT employees_seq.nextval FROM dual
+		</selectKey>
+		INSERT INTO employees
+			(EMPLOYEE_ID
+		   , FIRST_NAME
+		   , LAST_NAME
+		   , EMAIL
+		   , HIRE_DATE
+		   , JOB_ID
+		 <if test="salary != null">,SALARY</if>
+		   , MANAGER_ID
+		   , DEPARTMENT_ID
+		   , PHOTO)
+		VALUES(
+		  #{employeeId}
+		  , #{firstName}
+		  , #{lastName}
+		  , #{email}
+		  , #{hireDate}
+		  , #{jobId}
+		 <if test="salary != null">, #{salary}</if>
+		  , #{managerId}
+	      , #{departmentId}
+	      , #{photo}
+		)
+	</insert>
+
+<!-- 수정 -->
+<!-- 	<update id="updateEmp" parameterType="EmpVO">
+		UPDATE employees
+		SET content = #{content}
+		WHERE board_no = #{boardNo}
+	</update> -->
+	
+<!-- 삭제 -->	
+	<delete id="deleteEmp" parameterType="int">
+		DELETE FROM employees
+		WHERE employee_id = #{employeeId}
+	</delete>
+
+
+	<select id="getStat" resultType="map">	
+		SELECT e.department_id
+			 , d.department_name "name"
+			 , COUNT(*) "cnt"
+		FROM employees e JOIN departments d
+	                       ON e.department_id = d.department_id
+	 	WHERE e.department_id IS NOT NULL
+		GROUP BY e.department_id, department_name
+	</select>
+		
+</mapper>

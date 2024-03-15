@@ -5,7 +5,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h2>사원목록</h2>
+	<h2>사원단건조회</h2>
 	<table>
 		<tr>
 			<th>employee_id</th>
@@ -19,5 +19,9 @@
 			<td th:text="${emp.hireDate}"></td>
 		</tr>
 	</table>
+	<form action="/emp/delete/{employeeId}">
+		<input type="text">[[${emp.employeeId}]]
+		<button>삭제</button>
+	</form>
 </body>
 </html>

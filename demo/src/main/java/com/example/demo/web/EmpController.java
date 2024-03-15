@@ -36,10 +36,11 @@ public class EmpController {
 	final EmpMapper mapper; //생성자주입
 
 	//목록페이지로 이동
-	@RequestMapping("/emp/list")
+	@RequestMapping("/empList")
 	public String empList(Model model, EmpVO vo, SearchVO svo){
+		model.addAttribute("companyName", "<i><font color='red'>예담주식회사</font></i>");
 		model.addAttribute("empList", mapper.getEmpList(vo, svo));
-		return "emp/list"; 
+		return "empList"; 
 	}
 	
 	//상세조회 페이지 이동
@@ -79,19 +80,23 @@ public class EmpController {
 	
 	
 	//수정페이지 이동
-	@GetMapping("/emp/update")
-	public void update() { }
+	/*
+	 * @GetMapping("/emp/update") public void update() { }
+	 */
 	
 	//수정처리
-	
+	@GetMapping("/update/{empId}")
+	public String update(@PathVariable int empId) {
+		System.out.println(empId);
+		return "index";
+	}
 	
 	
 	//삭제처리
 	@GetMapping("/delete")
-	public String delete(int employeeId) {
-		System.out.println("삭제된 사원번호는? " + employeeId);
-		mapper.deleteEmp(employeeId);
-		return "redirect:/emp/list";
+	public String delete(int employeeId, String name) {
+		System.out.println(employeeId + ": " + name);
+		return "index";
 	}
 	
 

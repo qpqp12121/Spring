@@ -11,13 +11,14 @@
 			<th>employee_id</th>
 			<th>first_name</th>
 			<th>last_name</th>
+			<th>삭제</th>
 		</tr>
 		<tr th:each="emp : ${empList}">
 			<td th:text="${emp.employeeId}"></td>
 			<td th:text="${emp.firstName}"></td>
 			<td th:text="${emp.lastName}"></td>
 			<td th:text="${emp.hireDate}"></td>
-			<td><button onclick="deleteBtn" type="button">삭제</button></td>
+			<td><a th:href="@{/delete(employeeId=${emp.employeeId})}">삭제</a></td>
 		</tr>
 		
 	</table>
