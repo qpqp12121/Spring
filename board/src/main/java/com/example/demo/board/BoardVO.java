@@ -19,5 +19,5 @@ public class BoardVO {
 	 String writer;
 	 Date writeDate;
 	 int clickCnt;
-	 String img;
+	 String image;
 }

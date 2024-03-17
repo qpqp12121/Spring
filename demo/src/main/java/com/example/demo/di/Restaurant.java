@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Component //bin등록 -- 꺼내쓰는 게 @Autowired (DITest참고)
+@Component //bean등록 -- 꺼내쓰는 게 @Autowired (DITest참고)
 @Data
 @RequiredArgsConstructor //Autowired/Setter보다 이 방식 더 선호
 

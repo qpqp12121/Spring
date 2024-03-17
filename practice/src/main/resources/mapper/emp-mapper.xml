@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.emp_practice.mapper.EmpMapper">
+
+<!-- 동적쿼리 -->
+<sql id="condition">
+	<where>
+		<if test="vo.departmentId != null">
+			department_id = #{vo.departmentId}
+		</if>
+		<if test="vo.firstName != null">
+			AND first_name = #{vo.firstName}
+		</if>
+		<if test="vo.managerId != null">
+			AND manager_id = #{vo.managerId}
+		</if>
+		<if test="svo.employeeIds != null">
+			AND employee_id
+			<foreach collection="svo.employeeIds"
+				     item="empid"
+				     open="in ("
+				     close=")"
+				     separator=",">
+			#{empid}
+			</foreach>
+		</if>
+	</where>
+</sql>
+
+<!-- resultMap 사용 목록 조회 -->
+<!-- <resultMap type="EmpVO" id="empResultMap">
+	<id property="employeeId" column="employee_id"></id> id 기본키
+	<result property="firstName" column="first_name"></result>
+	<result property="phoneNumber" column="phone_number"></result>
+</resultMap>
+
+	<select id="getEmpResultMap" resultType="empResultMap">
+		SELECT employee_id
+			 , first_name
+			 , phone_number
+		FROM employees
+		ORDER BY employee_id
+	</select> -->
+
+
+<!-- 사원 전체목록  -->
+	<select id="getEmpList" resultType="EmpVO">
+		SELECT employee_id
+			 , first_name
+			 , last_name
+			 , email
+			 , phone_number
+			 , hire_date
+			 , job_id
+			 , salary
+			 , manager_id
+			 , department_id
+			 , photo
+		FROM employees
+		ORDER BY employee_id desc
+	</select>
+
+
+<!-- 사원 전체목록 페이징 -->
+	<select id="getEmpPaging" resultType="EmpVO">
+		SELECT r.*
+		FROM (
+				SELECT ROWNUM rn, e.*
+				FROM ( SELECT employee_id
+						    , first_name
+						    , last_name
+						    , email
+						    , phone_number
+						    , hire_date
+						    , job_id
+						    , salary
+						    , manager_id
+						    , department_id
+						    , photo
+					  FROM employees
+					  <include refid="condition"></include>
+					  ORDER BY employee_id ) e
+			 )r
+		WHERE rn between #{svo.start} and #{svo.end}
+	</select>
+
+<!-- 단건조회 -->
+	<select id="getEmpInfo" parameterType="int" resultType="EmpVO">
+		SELECT *
+		FROM employees
+		WHERE employee_id = #{employeeId}
+	</select>
+
+<!-- 등록 -->
+	<insert id="insertEmp" parameterType="EmpVO">
+		<selectKey keyProperty="employeeId"
+				   order="BEFORE"
+				   resultType="int">
+			SELECT employees_seq.nextval FROM dual
+		</selectKey>
+		INSERT INTO employees
+			( employee_id
+		 	, first_name
+		 	, last_name
+		 	, email
+		 	, hire_date
+		 	, job_id
+		 	<if test="salary != null">, salary</if>
+		 	, manager_id
+		 	, department_id
+		 	<if test="photo != null">, photo</if> )
+		VALUES(
+			#{employeeId}
+		  , #{firstName}
+		  , #{lastName}
+		  , #{email}
+		  , #{hireDate}
+		  , #{jobId}
+		  <if test="salary != null">, #{salary}</if>
+		  , #{managerId}
+		  , #{departmentId}
+		  <if test="photo != null">, #{photo}</if>
+		)
+	</insert>
+
+<!-- 수정 -->
+	<update id="updateEmp" parameterType="EmpVO">
+		UPDATE employees
+		SET phone_number = #{phoneNumber}
+		  , salary = #{salary}
+		  , photo = #{photo}
+		WHERE employee_id = #{employeeId}
+	</update>
+
+<!-- 삭제 -->
+	<delete id="deleteEmp" parameterType="int">
+		DELETE FROM employees
+		WHERE employee_id = #{employeeId}
+	</delete>
+</mapper>

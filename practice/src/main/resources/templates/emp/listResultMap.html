@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>employees</title>
+</head>
+<body>
+	<h2>사원목록</h2>
+	<table style="border: 1px solid #ccc">
+		<tr>
+			<th>employee_id</th>
+			<th>first_name</th>
+			<th>last_name</th>
+			<th>email</th>
+			<th>phone</th>
+			<th>hire_date</th>
+			<th>job_id</th>
+			<th>salary</th>
+			<th>manager_id</th>
+			<th>department_id</th>
+			<th>photo</th>
+		</tr>
+		<tr th:each="emp : ${empList}">
+			<td th:text="${emp.employeeId}"></td>
+			<td th:text="${emp.firstName}"></td>
+			<td th:text="${emp.lastName}"></td>
+			<td th:text="${emp.email}"></td>
+			<td th:text="${emp.phoneNumber}"></td>
+			<td th:text="${emp.hireDate}"></td>
+			<td th:text="${emp.jobId}"></td>
+			<td th:text="${emp.salary}"></td>
+			<td th:text="${emp.managerId}"></td>
+			<td th:text="${emp.departmentId}"></td>
+			<td th:text="${emp.photo}"></td>
+		</tr>
+	</table>
+</body>
+</html>
+
+<style>
+table, th, td {
+	border: 2px solid #ccc;
+	border-collapse: collapse;
+	padding: 5px;
+}
+th {
+	background: #eee
+}
+
+</style>

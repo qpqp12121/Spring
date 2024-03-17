@@ -23,7 +23,7 @@ public class 맵테스트 {
 			System.out.println(key + ": " + map.get(key));
 		}
 		
-		//
+		
 		//vo 대신 == Map사용
 		List<HashMap<String, Object>> empList = new ArrayList<HashMap<String, Object>>(); //값 여러타입 담으려면 Object로
 		map = new HashMap<>();

@@ -12,7 +12,7 @@ import lombok.Setter;
 @SpringBootTest
 public class DITest {
 	
-	@Autowired //bin 꺼내 쓰기 (기본이 singleton방식)
+	@Autowired //bean 꺼내 쓰기 (기본이 singleton방식)
 	private Restaurant restaurant;
 	
 	@Setter(onMethod_ = {@Autowired})

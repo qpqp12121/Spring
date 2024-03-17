@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>empUpdate</title>
+</head>
+<body>
+	<h2>사원수정</h2>
+	<form action="/emp/update" method="post" enctype="multipart/form-data">
+		employeeId <input name="employeeId" th:value="${emp.employeeId}" readonly>
+		lastName <input name="lastName" th:value="${emp.lastName}" readonly>
+		<br><br>
+		phoneNumber <input name="phoneNumber" th:value="${emp.phoneNumber}">
+		salary <input name="salary" th:value="${emp.salary}">
+		<!-- photo의 값은 안 읽어와 짐? -->
+		첨부파일 <input type="file" name="photofile" th:value="${emp.photo}"> <!-- name이랑 필드명 같으면 안 됨!!! -->
+		<!-- 첨부파일 <input type="file" name="photofile" th:if="${emp.photo != null}" th:value="${emp.photo}"> -->
+		<br><br>
+		<button>수정</button>
+	</form>
+</body>
+</html>

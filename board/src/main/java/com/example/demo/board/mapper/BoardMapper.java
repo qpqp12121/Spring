@@ -6,13 +6,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.demo.board.BoardVO;
-import com.example.demo.board.NumVO;
+import com.example.demo.emp.EmpVO;
+import com.example.demo.board.BSearchVO;
 
 @Mapper
 public interface BoardMapper {
 
 	//게시글 검색(+페이징)
-	List<BoardVO> getBoardList(@Param("vo") BoardVO vo, NumVO svo);
+	List<BoardVO> getBoardList(BoardVO vo, BSearchVO svo);
 	
 	//단건조회
 	BoardVO getBoardInfo(int boardNo);
@@ -25,5 +26,7 @@ public interface BoardMapper {
 	
 	//삭제
 	int deleteBoard(int boardNo);
+
+	
 	
 }

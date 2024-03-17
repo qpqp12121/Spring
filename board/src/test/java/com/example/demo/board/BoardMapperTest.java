@@ -16,34 +16,31 @@ public class BoardMapperTest {
 	//@Test
 	public void 게시글조회() {
 		//vo객체 생성
+		BSearchVO svo = new BSearchVO();
 		BoardVO vo = BoardVO.builder()
 					.title("첫")
-					.content("열심")
-					.writer("홍")
-				/*
-				 * .write_date('2024') .click_cnt .image
-				 */
+		//			.content("열심")
+		//			.writer("홍")
 					.build();
 		
-		NumVO svo = new NumVO();
 		
 		List<BoardVO> list = mapper.getBoardList(vo, svo);
 		
 		System.out.println(list.size());
 		
 		for(BoardVO board : list) {
-			System.out.println("번호: " + board.getBoardNo() + ", 제목: " + board.getTitle() + ", 내용: " + board.getContent() + ", 작성자: " + board.getWriter() + ", 작성일: " + board.getWriteDate());
+			System.out.println(", 제목: " + board.getTitle() + ", 내용: " + board.getContent());
 		}
 	}
 	
 	//@Test
 	public void 게시글단건조회() {
-		int boardNo = 1;
+		int boardNo = 2;
 		BoardVO vo = mapper.getBoardInfo(boardNo);
 		System.out.println(vo);
 	}
 	
-	@Test
+	//@Test
 	public void 게시글등록() {
 		BoardVO vo = BoardVO.builder()
 					.title("테스트")
@@ -59,15 +56,16 @@ public class BoardMapperTest {
 	//@Test
 	public void 게시글수정() {
 		BoardVO vo = BoardVO.builder()
+				.boardNo(5)
 				.content("이거이거22")
 				.build();
 		int result = mapper.updateBoard(vo);
 		System.out.println("결과? " + result);
 	}
 	
-	//@Test
-	public void 사원삭제() {
-		int boardNo = 7;
+	@Test
+	public void 게시글삭제() {
+		int boardNo = 5;
 		int result = mapper.deleteBoard(boardNo);
 		System.out.println("결과? " + result);
 	}

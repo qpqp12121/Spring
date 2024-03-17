@@ -62,8 +62,8 @@ public class EmpController {
 		
 		if(photo != null) {
 			if(photo.getSize() > 0) {
+				String photoName = photo.getOriginalFilename(); //파일명 변수에 담음
 				//파일생성
-				String photoName = photo.getOriginalFilename();
 				File file = new File("d:/upload", photo.getOriginalFilename());
 				//파일저장
 				photo.transferTo(file);//정보출력

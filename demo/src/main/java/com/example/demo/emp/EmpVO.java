@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class EmpVO {
 	int employeeId; //int는 null값 체크 X
 	String firstName;
