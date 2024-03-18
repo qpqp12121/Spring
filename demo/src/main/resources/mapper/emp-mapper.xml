@@ -106,11 +106,13 @@
 	</insert>
 
 <!-- 수정 -->
-<!-- 	<update id="updateEmp" parameterType="EmpVO">
+	<update id="updateEmp" parameterType="EmpVO">
 		UPDATE employees
-		SET content = #{content}
-		WHERE board_no = #{boardNo}
-	</update> -->
+		SET phone_number = #{phoneNumber}
+		  , salary = #{salary}
+		  , photo = #{photo}
+		WHERE employee_id = #{employeeId}
+	</update>
 	
 <!-- 삭제 -->	
 	<delete id="deleteEmp" parameterType="int">

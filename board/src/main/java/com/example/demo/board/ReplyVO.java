@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class ReplyVO {
 
-	private Integer rno;
-	private Integer bno;
+	private int rno;
+	private int bno;
 	private String reply;
 	private String replyer;
 	//@DateTimeFormat (pattern = "yyyy-MM-dd")

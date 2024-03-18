@@ -4,16 +4,58 @@
 
 <mapper namespace="com.example.demo.board.mapper.ReplyMapper">
 
+<!-- 댓글목록 +페이징 -->
 	<select id="getReplyList" resultType="ReplyVO">
-		SELECT rno
-			 , bno
-			 , reply
-			 , replyer
-			 , replyDate
-			 , updateDate
-		FROM tbl_reply
-		ORDER BY rno desc 
+		SELECT * FROM ( SELECT ROWNUM AS rn, a.* FROM (
+		
+			SELECT rno
+				 , bno
+				 , reply
+				 , replyer
+				 , replyDate
+				 , updateDate
+			FROM tbl_reply
+			WHERE bno = #{vo.bno}
+			ORDER BY rno desc 
+			
+		) a WHERE ROWNUM <![CDATA[<= #{svo.end} ) b WHERE rn >= #{svo.start}]]>
 	</select>
+<!-- 댓글목록 -->
+	<!-- <select id="getReplyList" resultType="ReplyVO">
+			SELECT rno
+				 , bno
+				 , reply
+				 , replyer
+				 , replyDate
+				 , updateDate
+			FROM tbl_reply
+			WHERE bno = #{bno}
+			ORDER BY rno desc
+	</select> -->
+	
+<!-- 	<select id="getReplyList" resultType="ReplyVO">
+			SELECT *
+			FROM tbl_reply
+			ORDER BY rno desc
+	</select> -->
 
+<!-- 등록 -->
+	<insert id="insertReply" parameterType="ReplyVO">
+		<selectKey keyProperty="rno" order="BEFORE" resultType="int">
+			SELECT seq_reply.nextval FROM dual
+		</selectKey>
+		INSERT INTO tbl_reply
+			( rno
+			, bno
+			, reply
+			, replyer
+			)
+		VALUES(
+			  #{rno}
+			, #{bno}
+			, #{reply}
+			, #{replyer}
+			)
+	</insert>
 
 </mapper>
