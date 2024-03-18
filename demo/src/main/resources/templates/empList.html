@@ -10,11 +10,62 @@
 	.oddRow { color: pink; }
 	.backColor { background-color: #eee}
 </style>
+	<!-- * body에 <script>넣을 거면 layout:fragment 안에 <script>들어와 있어야 읽힘 * 
+		   아니면 그냥 script를 head에 넣거나 -->
+	<script th:inline="javascript">
+		let emplist = [[${empList}]]
+		
+		function gopage(p){
+			frmSearch.page.value = p; //넘겨줄 값 여러 개면 form으로 넘겨주기
+			frmSearch.submit();
+			//location.href= 'empList?page=' + p //이전엔 페이지만 넘겨줄 거라 get방식 사용했지만
+		}
+		
+		function init() {
+			frmSearch.departmentId.value=""
+			frmSearch.firstName.value=""
+			frmSearch.managerId.value=""
+		}
+		
+		function move(empId) {
+			frmSearch.action = '/info/' + empId
+			frmSearch.submit();
+		}
+		
+	</script> 
 </head>
 <body>
  <div layout:fragment="content">
 	사원수: <span th:text="${#lists.size(empList)}">10</span>명<br>
 	회사명: <span th:utext="${companyName}"></span><!--/* th:utext 사용 시 태그 그대로 보임 (EmpController companyName참고) */-->
+	
+	<!-- 검색 form 시작 -->
+	<form name="frmSearch" th:object="${empVO}" action=""> <!-- 커맨드객체라 model.addAttr로 안 넘겨줬어도 EmpVO 앞을 소문자로 적으면 자동 생성  -->
+		<input type="hidden" name="page"> <!-- gopage(값) 넘어옴 -->
+		<select name="departmentId" th:value="*{departmentId}"> <!-- 여기선 일일이 적었지만 for문으로 list가져와서 처리하면 됨 -->
+			<option value="">선택
+			<option value="10" th:selected="*{departmentId}=='10'">Administration
+			<option value="20" th:selected="*{departmentId}=='20'">Marketing
+			<option value="190" th:selected="*{departmentId}=='190'">Contracting
+			<option value="50" th:selected="*{departmentId}=='50'">Shipping
+			<option value="60" th:selected="*{departmentId}=='60'">IT
+			<option value="80" th:selected="*{departmentId}=='80'">Sales
+			<option value="90" th:selected="*{departmentId}=='90'">Executive
+			<option value="110" th:selected="*{departmentId}=='110'">Accounting
+			<option value="150" th:selected="*{departmentId}=='150'">Support
+			<option value="160" th:selected="*{departmentId}=='160'">Support
+			<option value="170" th:selected="*{departmentId}=='170'">Support
+		</select>
+		firstName: <input name="firstName" th:value="*{firstName}"> <!-- th:value-- 넣어주면 새로 고침해도 값 유지 됨 -->
+		<!-- managerId: <input name="managerId" th:value="${empVO.managerId}"> -->
+		managerId: <input name="managerId" th:value="*{managerId}">
+		<button type="button" onclick="gopage(1)">검색</button>
+		<button type="button" onclick="init()">초기화</button> <!-- button type="reset" 하면 초기화되는데 value값 있으면 안 먹음  -->
+	</form>
+	<!-- 검색 form 끝 -->
+	
+	<br>
+	
 	<table>
 		<tr>
 			<th>NO.</th>
@@ -51,24 +102,43 @@
 			
 			<!-- URL -->
 			<td><!-- localhost:8081/update/100 -->
-				<a th:href="@{/update/{id}(id=${emp.employeeId})}">수정</a><!-- url만들 땐 $아니고 @{}  -->
+				<!-- <a th:href="@{/update/{id}(id=${emp.employeeId})}">수정</a> --><!-- url만들 땐 $아니고 @{}  -->
+				<!-- form 가지고 넘어가도록 수정함 -->
+				<button type="button" th:onclick="move([[${emp.employeeId}]])">조회</button>
 				<!-- localhost:8081/delete?/employeeId=100 --><!-- EmpController에서 넘겨준 파라미터랑 같아야 됨 -->
 				<a th:href="@{/delete(employeeId=${emp.employeeId},name=${emp.firstName})}">삭제</a>
 			</td>
 		</tr>
 	</table>
 	
+<!-- 	[[${paging}]] -->
+	<!-- 페이징 시작 -->
+	<nav aria-label="...">
+	  <ul class="pagination">
+	    <li class="page-item" th:if="${paging.startPage} > 1"> <!-- disabled로 비활성화시킬 거면 class를 줘야 됨 (지금은 아예 안 보이게 처리 -->
+	    <!-- <li class="page-item" th:classappend="${paging.startPage} == 1 ? disabled"> -->
+	        <a class="page-link" th:href="|javascript:gopage(${paging.startPage-1})|">Previous</a></li>
+
+	    <li th:each="num : *{#numbers.sequence(paging.startPage, paging.endPage)}" 
+	        class="page-item" 
+	        th:addclass="${num} == ${paging.page} ? active">
+	        <a class="page-link" th:href="|javascript:gopage(${num})|"  th:text="${num}">2</a></li>
+	    
+	    <li class="page-item" th:classappend="${paging.endPage} <= ${paging.lastPage} ? disabled">
+	    <!-- <li class="page-item" th:classappend="${paging.endPage} <= ${paging.lastPage} ? disabled"> -->
+	        <a class="page-link" th:href="|javascript:gopage(${paging.endPage+1})|">Next</a></li>
+	  </ul>
+	</nav>
+	<!-- 페이징 종료 -->
+	
 	
 	<!-- Template -->
 <!-- 	<div class="footerSector" th:insert="~{footer}">여기에 삽입</div> --><!--템플릿 삽입 th:insert="~{폴더명/footer}" -->
 <!-- 		<div class="footerSector" th:insert="~{footer :: addr}">여기에 삽입</div> -->
 		<div class="footerSector" th:replace="~{footer :: addr}">여기에 삽입</div>
-		
- </div>		
-	<script th:inline="javascript">
-		let emplist = [[${empList}]]
-		console.log(emplist[0].firstName)
-	</script>
+	
+
+ </div>	<!-- <div layout:fragment="content"> end -->	
 
 </body>
 </html>

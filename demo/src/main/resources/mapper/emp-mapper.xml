@@ -7,13 +7,13 @@
 <!-- 동적쿼리 -->
 <sql id="condition">
 	<where>
-		<if test="vo.departmentId != null">				
+		<if test="vo.departmentId != null and vo.departmentId != ''">				
 			DEPARTMENT_ID = #{vo.departmentId}
 		</if>
-		<if test="vo.firstName != null">
-			AND first_name = #{vo.firstName}
+		<if test="vo.firstName != null and vo.firstName != ''">
+			AND first_name LIKE '%' || #{vo.firstName} || '%'
 		</if>
-		<if test="vo.managerId != null">
+		<if test="vo.managerId != null and vo.managerId != ''">
 			AND manager_id = #{vo.managerId}
 		</if>
 		<if test="svo.employeeIds != null">
@@ -36,6 +36,12 @@
 	<result property="comm" column="COMMISSION_PCT" />		
 </resultMap>
 
+	<select id="getCount" resultType="long"> <!-- 65000넘어가면 long으로 아니면 int로 -->
+		SELECT COUNT(*)
+		FROM employees
+		<include refid="condition"></include>
+	</select>
+
 	<select id="getEmpList" resultType="EmpVO">
 	SELECT * FROM ( SELECT ROWNUM AS rn, a.* FROM (
 	
@@ -52,7 +58,7 @@
 			 , DEPARTMENT_ID
 		FROM employees e
 		<include refid="condition"></include>
-		ORDER BY employee_id
+		ORDER BY employee_id desc
 		
 	<![CDATA[ ) a WHERE ROWNUM <= #{svo.end} ) b WHERE rn >= #{svo.start} ]]>
 	</select>

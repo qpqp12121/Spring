@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>sample.html</title>
+</head>
+<body>
+<!--static 폴더 안에 있어서 http://localhost:8081/sample.html 로 바로 호출 가능  -->
+	<h3>ajax test</h3>
+	
+	<div id="result"></div>
+	
+ <script>
+ 	fetch("/getText")
+ 	//.then(res => res.json()) //res.text()로 받으면 json parsing X
+ 	//.then(res => result.innerHTML = res.greet)
+ 	.then(res => res.text())
+ 	.then(res => result.innerHTML = res)
+ 	
+ 
+ </script>
+</body>
+</html>

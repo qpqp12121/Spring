@@ -1,4 +1,4 @@
-package com.example.demo.emp_practice.mapper;
+package com.example.demo.emppractice.mapper;
 
 import java.util.List;
 

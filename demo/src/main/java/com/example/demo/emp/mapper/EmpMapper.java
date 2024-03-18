@@ -30,4 +30,8 @@ public interface EmpMapper {
 	//부서별 사원 수
 	List<Map<String, Object>> getStat(); //부서별 인원수 조회
 	
+	
+	//@Select("SELECT COUNT(*) FROM employees") //쿼리문 따로 작성 안하고 이렇게도 가능
+	public long getCount(EmpVO vo, SearchVO svo); //count에도 조건절 걸어놔서 empvo, searchvo 다 넘겨줘야 됨 아니면 getproperty오류
+	
 }

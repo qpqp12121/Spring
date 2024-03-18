@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ 	  layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>tbl_reply</title>
+</head>
+<body>
+ <div layout:fragment="content">
+	<h3>댓글목록</h3>
+ 	<table>
+		<thead>
+			<tr>
+				<th>NO.</th>
+				<th>board_no</th>
+				<th>댓글내용</th>
+				<th>작성자</th>
+				<th>작성일자</th>
+				<th>수정일자</th>
+			</tr>
+		</thead>
+		<tbody id="replylist">
+			<!-- <tr>
+				<td>1</td>
+				<td>1</td>
+				<td>첫번째</td>
+				<td>홍길동</td>
+				<td>2024-03-18</td>
+				<td>2024-03-18</td>
+			</tr> -->
+		</tbody>
+	</table>
+ 
+ 
+<script>
+//댓글리스트 요청
+listReq();
+
+function listReq() {
+	fetch("/ajax/replyList")
+	.then(res => res.json())
+	.then(res => listRes(res));
+}
+
+//댓글리스트 응답
+function listRes(res) {
+	for(obj of res) {
+		//table body 삽입
+		let newTag = 
+		`<tr>
+			<td>${obj.rno}</td>
+			<td>${obj.bno}</td>
+			<td>${obj.reply}</td>
+			<td>${obj.replyer}</td>
+			<td>${dateFormat(obj.replyDate)}</td>
+			<td>${dateFormat(obj.updateDate)}</td>
+		 </tr>`
+		 
+		 replylist.innerHTML += newTag;
+	}
+}
+//날짜format
+function dateFormat(dt) {
+		console.log(dt);
+		let date = new Date(dt);
+		
+		let year = date.getFullYear();
+		let month = ( 1 + date.getMonth() );
+		let day = date.getDate();
+		
+		month = month >= 10 ? month : '0' + month; //10미만일 시 앞에 0을 붙혀서 저장
+		day = day >= 10 ? day : '0' + day;
+		
+		return `${year}년 ${month}월 ${day}일`;
+}
+
+</script>
+ 
+ 
+ 
+ </div>
+</body>
+</html>
