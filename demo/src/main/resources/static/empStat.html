@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!-- Google Charts  
+수업 중 편하게 실행하려고 static 폴더에 넣은 거임 원래 template 안에 둠
+http://localhost:8081/empStat.html-->
+
+<html>
+  <head>
+  <meta charset="UTF-8">
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      async function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', '부서명');
+        data.addColumn('number', '인원수');
+        
+        /* [[]] 타입으로 data.addRows()안에 ajax요청한 데이터 넣을 거임 */
+        //ajax 요청
+        const result = await fetch("/ajax/empStat"); //data받아오고
+        const chartDataJson = await result.json(); //결과 json->객체로 변환시켜주고
+        const chartData = []; //결과 이 배열에 담기(for문 돌면서)
+        
+        //데이터 가공
+        for(obj of chartDataJson) {
+        	chartData.push( [ obj.name, obj.cnt ]) //http://localhost:8081/ajax/empStat에 담긴 데이터
+        }
+      
+        data.addRows(chartData);
+
+
+        // Set chart options
+        var options = {'title': '부서별 인원수',
+                       'width':400,
+                       'height':300};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+                                            //PieChart 차트종류
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div"></div>
+  </body>
+</html>

@@ -3,6 +3,7 @@ package com.example.demo.emp.web;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import com.example.demo.common.Paging;
 import com.example.demo.emp.EmpVO;
 import com.example.demo.emp.SearchVO;
 import com.example.demo.emp.mapper.EmpMapper;
+import com.example.demo.emp.service.EmpService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,8 +35,10 @@ import lombok.RequiredArgsConstructor;
 
 public class EmpController {
 	
+	final EmpService empService;
+	
 	//@Autowired EmpMapper dao; //의존성주입(DI dependency Injection) -- 객체관리를 스프링이 알아서 해 줌(new키워드 없이도 Autowired쓰면?)
-	final EmpMapper mapper; //생성자주입
+	//final EmpMapper mapper; //생성자주입 -- Service만들어서 대체 함
 
 	//목록페이지로 이동
 //	@RequestMapping("/empList")
@@ -55,11 +59,14 @@ public class EmpController {
 		pvo.setPageSize(3); //페이지 번호 수
 		svo.setStart(pvo.getFirst());
 		svo.setEnd(pvo.getLast());
-		pvo.setTotalRecord(mapper.getCount(vo, svo));
+		
+		Map<String,Object> map = empService.getEmpList(vo, svo);
+		
+		pvo.setTotalRecord((Long)map.get("count"));
 		model.addAttribute("paging", pvo); //커맨드객체라 안 넘겨도 넘어 감 (보려고 작성) vo svo도 마찬가지 (자동으로 앞글자 소문자로 ex. empVO => empList.html에서  th:value="${empVO.firstName}"로 넘겨주는 거 없이 바로 사용
 		
 		//목록조회
-		model.addAttribute("empList", mapper.getEmpList(vo, svo));	
+		model.addAttribute("empList", map.get("data"));	
 		return "empList"; 
 	}
 	
@@ -67,7 +74,7 @@ public class EmpController {
 	//상세조회 페이지 이동
 	@GetMapping("/emp/info/{employeeId}")
 	public String empInfo(Model model, @PathVariable int employeeId) {
-		model.addAttribute("emp", mapper.getEmpInfo(employeeId));
+		model.addAttribute("emp", empService.getEmpInfo(employeeId));
 		return "emp/info";
 	}
 	
@@ -93,25 +100,23 @@ public class EmpController {
 				System.out.println("파일크기: " + photo.getSize());
 				
 				vo.setPhoto(photoName); //파일이름을 photo필드에 담아야 되니 set (자주쓰려면변수로선언해도되고)
-				mapper.insertEmp(vo);
+				empService.insertEmp(vo);
 			}
 		}
 		return "redirect:/emp/list";
 	}
 	
-	
-	//수정페이지 이동
-	/*
-	 * @GetMapping("/emp/update") public void update() { }
-	 */
-	
-	
+	//단건조회
 	@GetMapping("/info/{empId}") //empList 목록에서 조회?수정버튼 눌렀을 때 목록의 form태그 조건 다 가지고 넘어가게 할 것
 	public String info(@PathVariable int empId, Model model) {
-		model.addAttribute("emp", mapper.getEmpInfo(empId));
+		model.addAttribute("emp", empService.getEmpInfo(empId));
 		return "empInfo";
 	}
 	
+	
+	//수정페이지 이동
+	@GetMapping("/emp/update") 
+	public void update() { }
 	
 	//수정처리
 	@GetMapping("/update/{empId}")
@@ -124,8 +129,8 @@ public class EmpController {
 	//삭제처리
 	@GetMapping("/delete")
 	public String delete(int employeeId, String name) {
-		System.out.println(employeeId + ": " + name);
-		return "index";
+		empService.deleteEmp(employeeId);
+		return "redirect:/emp/list";
 	}
 	
 

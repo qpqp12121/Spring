@@ -33,11 +33,21 @@
 			ORDER BY rno desc
 	</select> -->
 	
-<!-- 	<select id="getReplyList" resultType="ReplyVO">
+<!--  	<select id="getReplyList" resultType="ReplyVO">
 			SELECT *
 			FROM tbl_reply
+			WHERE bno = #{bno}
 			ORDER BY rno desc
 	</select> -->
+	
+
+<!-- 단건조회(상세) -->
+	<select id="getReplyInfo" parameterType="int" resultType="ReplyVO">
+		SELECT *
+		FROM tbl_reply
+		WHERE rno = #{rno}
+	</select>
+
 
 <!-- 등록 -->
 	<insert id="insertReply" parameterType="ReplyVO">
@@ -57,5 +67,17 @@
 			, #{replyer}
 			)
 	</insert>
+
+<!-- 삭제 -->	
+	<delete id="deleteReply" parameterType="int">
+		DELETE FROM tbl_reply
+		WHERE rno = #{rno}
+	</delete>
+
+
+
+
+
+
 
 </mapper>

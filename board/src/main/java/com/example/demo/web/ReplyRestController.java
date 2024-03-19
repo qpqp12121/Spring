@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,11 +48,19 @@ public class ReplyRestController {
 //		return mapper.getReplyList(bno);
 //	}
 	
-//그냥 댓글 전체리스트
+//페이징없는 커맨드객체로 글번호 받음
 //	@GetMapping("/replyList")
-//	public List<ReplyVO> replyList() {
-//		return mapper.getReplyList();
+//	public List<ReplyVO> replyList(ReplyVO vo) {
+//		return mapper.getReplyList(vo);
 //	}
+
+//상세조회
+	@GetMapping("/reply/{rno}")
+	public ReplyVO info(@PathVariable int rno) {
+		return mapper.getReplyInfo(rno);
+	}
+
+	
 	
 //등록
 	//JSON
@@ -60,6 +69,12 @@ public class ReplyRestController {
 		System.out.println(vo); //콘솔창 테스트시 아래 막아놓고
 		mapper.insertReply(vo);
 		return vo;
+	}
+//삭제
+	@GetMapping("/reply/del/{rno}")
+	public int delete(@PathVariable int rno) {
+		System.out.println("삭제된 댓글번호? " + rno);
+		return mapper.deleteReply(rno);
 	}
 	
 }

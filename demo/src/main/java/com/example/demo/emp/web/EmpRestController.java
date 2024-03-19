@@ -1,6 +1,7 @@
 package com.example.demo.emp.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,11 +17,13 @@ import com.example.demo.common.Paging;
 import com.example.demo.emp.EmpVO;
 import com.example.demo.emp.SearchVO;
 import com.example.demo.emp.mapper.EmpMapper;
+import com.example.demo.emp.service.EmpService;
 
 //@Controller //아래 @ResponseBody 함께 써줘야 됨
 @RestController //쓰면 아래 @ResponseBody 필요 없음
 public class EmpRestController {
-	@Autowired EmpMapper mapper;
+	//@Autowired EmpMapper mapper;
+	@Autowired EmpService service;
 	
 // 1.@Controller랑 @ResponseBody 같이 사용하는 경우
 	//리스트 페이지 이동
@@ -45,10 +48,14 @@ public class EmpRestController {
 	}
 	//사원리스트 데이터
 	@GetMapping("/ajax/empList")//ajax응답은 model 필요 X
-	public List<EmpVO> empList(EmpVO vo, SearchVO svo, Paging pvo) { //페이지응답은 return타입 "페이지명"이라 무조건 public String 메서드명(){}인데 ajax응답은 return 데이터에 맞게 설정	
+	public Map<String,Object> empList(EmpVO vo, SearchVO svo, Paging pvo) { //페이지응답은 return타입 "페이지명"이라 무조건 public String 메서드명(){}인데 ajax응답은 return 데이터에 맞게 설정	
 		svo.setStart(pvo.getFirst());
 		svo.setEnd(pvo.getLast());
-		return mapper.getEmpList(vo, svo);
+		Map<String,Object> map = service.getEmpList(vo, svo);
+		pvo.setTotalRecord((Long)map.get("count"));
+		map.put("paging", pvo);
+		
+		return map; //EmpController에선 model.add안해도넘어갔는데 ajax는 X=> return한 거만 넘어감
 	}
 	
 //================================================================	
@@ -65,7 +72,7 @@ public class EmpRestController {
 	@PostMapping("/ajax/emp")
 	public EmpVO save(@RequestBody EmpVO vo) { 
 		System.out.println(vo); //콘솔창 테스트시 아래 막아놓고
-		mapper.insertEmp(vo);
+		service.insertEmp(vo);
 		return vo;
 	}
 
@@ -73,6 +80,13 @@ public class EmpRestController {
 	//단건조회
 	@GetMapping("/ajax/emp/{employeeId}")
 	public EmpVO info(@PathVariable int employeeId) { 
-		return mapper.getEmpInfo(employeeId);
+		return service.getEmpInfo(employeeId);
+	}
+//==================================================================
+	//Chart
+	//데이터로 empStat.html에 Chart로 만들거임
+	@GetMapping("/ajax/empStat")
+	public List<Map<String, Object>> stat() {
+		return service.getStat();
 	}
 }

@@ -36,6 +36,7 @@
 	<result property="comm" column="COMMISSION_PCT" />		
 </resultMap>
 
+<!-- 페이징위해서 전체건수 구하기 -->
 	<select id="getCount" resultType="long"> <!-- 65000넘어가면 long으로 아니면 int로 -->
 		SELECT COUNT(*)
 		FROM employees

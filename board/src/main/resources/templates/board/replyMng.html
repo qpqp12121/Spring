@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
- 	  layout:decorate="~{layout/layout}">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>tbl_reply</title>
 </head>
 <body>
- <div layout:fragment="content">
 	<h3>댓글목록</h3>
  	<table>
 		<thead>
 			<tr>
-				<th>NO.</th>
-				<th>board_no</th>
+				<!-- <th>NO.</th> -->
+				<th>글번호</th>
 				<th>댓글내용</th>
 				<th>작성자</th>
 				<th>작성일자</th>
 				<th>수정일자</th>
+				<th>삭제</th>
 			</tr>
 		</thead>
 		<tbody id="replylist">
@@ -35,14 +33,14 @@
 	<!-- 페이징 타임리프말고 하는 거 찾아보기 -->
 	5건씩 최신순으로 정렬(페이징넣기)
 	
-	<br>
+	<br><br>
 	
-	<h3>사원(등록, 조회)</h3>
+	<h3>댓글등록/조회/수정</h3>
 	<!-- ajax는 form action속성 사용 X & button type="button"으로(아니면 기본 submit이라 실행X) -->
 	<form method="post" name="frm"> 
 		글번호 <input name="bno"><br><br>
-		댓글  <input name="reply"><br><br>
-		작성자 <input name="replyer">
+		작성자 <input name="replyer"><br><br>
+		<textarea name="reply" cols="30" rows="5"></textarea><br><br>
 		<button type="button" onclick="saveReq()">등록</button>
 	</form>
  
@@ -53,6 +51,7 @@ listReq();
 
 //댓글리스트 함수로 (등록삭제 등 처리 후 append로 후처리 못하겠으면 리스트만 다시 재로드)
 function listReq() {
+	replylist.innerHTML = "";
 	//아직bno 연결X
 	let bno = 1;
 	//fetch("/replyList?bno="+1)
@@ -75,18 +74,18 @@ function listReq() {
 
 //댓글리스트 응답
 function listRes(res) {
-	console.log(res); //빈배열
+	//console.log(res);
 	
 	for(obj of res) {
 		//table body 삽입
 		let newTag = 
 		`<tr>
-			<td>${obj.rno}</td>
 			<td>${obj.bno}</td>
-			<td>${obj.reply}</td>
+			<td onclick="infoReq(${obj.rno})">${obj.reply}</td>
 			<td>${obj.replyer}</td>
 			<td>${dateFormat(obj.replyDate)}</td>
 			<td>${dateFormat(obj.updateDate)}</td>
+			<td><button type="button" onclick="deleteReq(${obj.rno})">삭제</button></td>
 		 </tr>`
 		 
 		 replylist.innerHTML += newTag;
@@ -94,7 +93,7 @@ function listRes(res) {
 }
 //날짜format
 function dateFormat(dt) {
-		console.log(dt);
+		//console.log(dt);
 		let date = new Date(dt);
 		
 		let year = date.getFullYear();
@@ -104,7 +103,7 @@ function dateFormat(dt) {
 		month = month >= 10 ? month : '0' + month; //10미만일 시 앞에 0을 붙혀서 저장
 		day = day >= 10 ? day : '0' + day;
 		
-		return `${year}년 ${month}월 ${day}일`;
+		return `${year}.${month}.${day}`;
 }
 //페이징
 /* function gopage(p){
@@ -139,15 +138,43 @@ function saveReq() {
 
 //등록응답
 function saveRes(res) {
-	//console.log(res)
+	listReq();
+}
+
+//======================================================
+//상세조회 요청
+function infoReq(rno) {
+	fetch(`/reply/${rno}`)
+	.then(res => res.json())
+	.then(res => infoRes(res))
+}
+
+//상세조회 응답
+function infoRes(res) {
+	//input태그에 해당 사원 정보 표시
+	frm.bno.value = res.bno;
+	frm.reply.value = res.reply;
+	frm.replyer.value = res.replyer;
+}
+
+//======================================================
+//삭제 요청
+function deleteReq(rno) {
+	console.log(rno);
+	fetch(`/reply/del/${rno}`)
+	.then(res => res.json())
+	.then(res => deleteRes(res))
+}
+
+//삭제 응답
+function deleteRes(res) {
 	listReq();
 }
 
 </script>
  
  
- 
- </div>
+
 </body>
 </html>
 
