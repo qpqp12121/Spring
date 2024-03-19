@@ -1,43 +1,33 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ 	  layout:decorate="~{layout/layout}"><!-- ~{폴더명/파일명} (.html확장자는 생략 가능)-->
 <head>
 <meta charset="UTF-8">
-<title>employees</title>
-</head>
-<body>
-	<h2>사원목록</h2>
-	<h3>페이징&동적쿼리 적용</h3>
-	<table style="border: 1px solid #ccc">
-		<tr>
-			<th>employee_id</th>
-			<th>first_name</th>
-			<th>last_name</th>
-			<th>email</th>
-			<th>phone</th>
-			<th>hire_date</th>
-			<th>job_id</th>
-			<th>salary</th>
-			<th>manager_id</th>
-			<th>department_id</th>
-			<th>photo</th>
-		</tr>
-		<tr th:each="emp : ${empList}">
-			<td th:text="${emp.employeeId}"></td>
-			<td th:text="${emp.firstName}"></td>
-			<td th:text="${emp.lastName}"></td>
-			<td th:text="${emp.email}"></td>
-			<td th:text="${emp.phoneNumber}"></td>
-			<td th:text="${emp.hireDate}"></td>
-			<td th:text="${emp.jobId}"></td>
-			<td th:text="${emp.salary}"></td>
-			<td th:text="${emp.managerId}"></td>
-			<td th:text="${emp.departmentId}"></td>
-			<td th:text="${emp.photo}"></td>
-		</tr>
-	</table>
-</body>
-</html>
+<title>게시글목록</title>
 
+<script th:inline="javascript">
+
+	function gopage(p){
+		frmSearch.page.value = p; //넘겨줄 값 여러 개면 form으로 넘겨주기
+		frmSearch.submit();
+		
+		
+		
+	}
+	
+/* 	function init() {
+		frmSearch.departmentId.value=""
+		frmSearch.firstName.value=""
+		frmSearch.managerId.value=""
+	} */
+	
+	function move(boardNo) {
+		frmSearch.action = '/board/info/' + boardNo
+		frmSearch.submit();
+	}
+	
+</script>
 <style>
 table, th, td {
 	border: 2px solid #ccc;
@@ -48,4 +38,87 @@ th {
 	background: #eee
 }
 
+/* 페이징번호 */
+ul li {
+	list-style-type: none;
+	float: left;
+	padding: 2px;
+}
+/* .pagination li {
+	text-align: center;
+} */
 </style>
+ 
+</head>
+<body>
+ <div layout:fragment="content">
+	게시글 수: <span th:text="${#lists.size(boardList)}"></span>건<br>
+	                        <!-- 타임리프 유틸 함수 #lists / #dates / #numbers etc.. -->
+	
+	<!-- 검색 form 시작 -->
+	<form name="frmSearch" th:object="${boardVO}" action=""> <!-- 커맨드객체라 model.addAttr로 안 넘겨줬어도 EmpVO 앞을 소문자로 적으면 자동 생성  -->
+		<input type="hidden" name="page"> <!-- gopage(값) 넘어옴 -->
+		<!-- 제목: <input name="title" th:value="*{title}"> --> <!-- th:value-- 넣어주면 새로 고침해도 값 유지 됨 -->
+		제목: <input name="title">
+		내용: <input name="content">
+		작성자: <input name="writer">
+		<button type="button" onclick="gopage(1)">검색</button>
+		<!-- <button type="button" onclick="init()">초기화</button> --> <!-- button type="reset" 하면 초기화되는데 value값 있으면 안 먹음  -->
+		<button type="reset">초기화</button>
+	</form>
+	<!-- 검색 form 끝 -->
+
+	<br>
+	<button th:onclick="|location.href='@{list}'|">전체목록</button>
+	<button th:onclick="|location.href='@{insert}'|">글쓰기</button>
+	<div style="padding-bottom:10px"></div>
+	
+		<table>
+		<tr>
+			<th>NO</th>
+			<th>제목</th>
+			<!-- <th>내용</th> -->
+			<th>작성자</th>
+			<th>작성일자</th>
+			<th>조회수</th>
+			<th>상세조회</th>
+			<th>삭제</th>
+		</tr>
+		<tr th:each="board : ${boardList}">
+			<td th:text="${boardStat.count}"></td> <!--반복중에 필요한 상태를 확인할 수 있다 stat으로 (ex.index, size, count 등)-->
+			<td th:text="${board.title}"></td>
+			<!-- <td th:text="${board.content}"></td> -->
+			<td th:text="${board.writer}"></td>
+			<td th:text="${#dates.format(board.writeDate, 'yyyy.MM.dd')}"></td>
+			<td th:text="${board.clickCnt}"></td>
+			<td><button type="button" th:onclick="move([[${board.boardNo}]])">조회</button></td>
+			<td><button th:onclick="|location.href='@{/board/delete(boardNo=${board.boardNo})}'|">삭제</button></td>
+		</tr>
+			
+	</table>
+	<br>
+	
+	<!-- [[${boardVO}]] -->
+	<!-- [[${paging}]] --> <!-- 커맨드객체라 model.add-로 안 넘겼어도 앞글자 소문자로 그대로 자동으로 값 넘어 옴 -->
+	
+	<!-- 페이징 시작 -->
+	<nav aria-label="...">
+	  <ul class="pagination">
+	    <li class="page-item" th:if="${paging.startPage} > 1">
+	        <a class="page-link" th:href="|javascript:gopage(${paging.startPage-1})|">Previous</a></li>
+	    <li th:each="num : *{#numbers.sequence(paging.startPage, paging.endPage)}" 
+	        class="page-item" 
+	        th:addclass="${num} == ${paging.page} ? active">
+	        <a class="page-link" th:href="|javascript:gopage(${num})|"  th:text="${num}">2</a></li>
+	    <li class="page-item" th:if="${paging.endPage} < ${paging.lastPage}">
+	        <a class="page-link" th:href="|javascript:gopage(${paging.endPage+1})|">Next</a></li>
+	  </ul>
+
+	</nav>
+	<!-- 페이징 종료 -->
+	
+
+ </div>	<!-- <div layout:fragment="content"> end -->
+
+</body>
+</html>

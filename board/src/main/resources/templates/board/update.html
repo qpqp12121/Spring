@@ -2,21 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>empUpdate</title>
+<title>board_update</title>
 </head>
 <body>
-	<h2>사원수정</h2>
-	<form action="/emp/update" method="post" enctype="multipart/form-data">
-		employeeId <input name="employeeId" th:value="${emp.employeeId}" readonly>
-		lastName <input name="lastName" th:value="${emp.lastName}" readonly>
-		<br><br>
-		phoneNumber <input name="phoneNumber" th:value="${emp.phoneNumber}">
-		salary <input name="salary" th:value="${emp.salary}">
-		<!-- photo의 값은 안 읽어와 짐? -->
-		첨부파일 <input type="file" name="photofile" th:value="${emp.photo}"> <!-- name이랑 필드명 같으면 안 됨!!! -->
-		<!-- 첨부파일 <input type="file" name="photofile" th:if="${emp.photo != null}" th:value="${emp.photo}"> -->
-		<br><br>
-		<button>수정</button>
+	<h2>게시글 수정</h2>
+	
+	<form action="/board/update" method="post" enctype="multipart/form-data">
+		글번호 <input name="boardNo" th:value="${board.boardNo}" readonly> <br><br>
+		제목 <input name="title" th:value="${board.title}"> <br><br>
+		작성자 <input name="writer" th:value="${board.writer}"> <br><br>
+		<textarea name="content" th:text="${board.content}" cols="30" rows="5"></textarea><br><br>
+		<!-- 첨부파일 <input type="file" name="imagefile" th:text="${board.image}"> --> <!-- name이랑 필드명 같으면 안 됨!!! --><br><br>
+		<button>등록</button>
 	</form>
+	
 </body>
 </html>

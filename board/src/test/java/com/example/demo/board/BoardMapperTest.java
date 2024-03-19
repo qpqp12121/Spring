@@ -18,6 +18,7 @@ public class BoardMapperTest {
 		//vo객체 생성
 		BSearchVO svo = new BSearchVO();
 		BoardVO vo = BoardVO.builder()
+					.boardNo('1')
 					.title("첫")
 		//			.content("열심")
 		//			.writer("홍")

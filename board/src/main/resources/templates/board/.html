@@ -14,7 +14,6 @@
 		   아니면 그냥 script를 head에 넣거나 -->
 	<script th:inline="javascript">
 		let emplist = [[${empList}]]
-		console.log(emplist);
 		
 		function gopage(p){
 			frmSearch.page.value = p; //넘겨줄 값 여러 개면 form으로 넘겨주기
@@ -82,7 +81,6 @@
 		<!--/* 앞에 th: 붙이면 thymeleaf사용  */-->
 		<tr th:each="emp,stat : ${empList}" th:class="${stat.first? 'firstRow' : stat.odd ? 'oddRow' : _}"><!-- 언더바_: 아무 것도 없음을 의미 +아래 기존 class에 추가할 땐 th:classappend="" 사용 -->
 			<td th:text="${stat.count}" class="backColor" th:classappend="${stat.first? 'firstRow' : stat.odd ? 'oddRow' : _}">1</td>  <!-- 루프변수Stat으로 하는 게 편함 (ex.위에 emp : ${empList}면 아래엔 ${empStat.count}) -->
-			<!--반복중에 필요한 상태를 확인할 수 있다 stat으로 (ex.index, size, count 등)-->
 			<td th:text="${emp.employeeId}">100</td>
 			
 <!--/* 			<td th:text="${emp.firstName}">길동</td>
@@ -108,8 +106,7 @@
 				<!-- form 가지고 넘어가도록 수정함 -->
 				<button type="button" th:onclick="move([[${emp.employeeId}]])">조회</button>
 				<!-- localhost:8081/delete?/employeeId=100 --><!-- EmpController에서 넘겨준 파라미터랑 같아야 됨 -->
-				<!-- <a th:href="@{/delete(employeeId=${emp.employeeId},name=${emp.firstName})}">삭제</a> -->
-				<td><button th:onclick="|location.href='@{/emp/delete(employeeId=${emp.employeeId})}'|">삭제</button></td>
+				<a th:href="@{/delete(employeeId=${emp.employeeId},name=${emp.firstName})}">삭제</a>
 			</td>
 		</tr>
 	</table>

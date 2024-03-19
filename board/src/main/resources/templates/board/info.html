@@ -5,35 +5,29 @@
 <title>employeeInfo</title>
 </head>
 <body>
-	<h2>사원 단건조회</h2>
+	<h2>게시글 단건조회</h2>
 	<table>
 		<tr>
-			<th>employee_id</th>
-			<th>first_name</th>
-			<th>last_name</th>
-			<th>email</th>
-			<th>phone</th>
-			<th>hire_date</th>
-			<th>job_id</th>
-			<th>salary</th>
-			<th>manager_id</th>
-			<th>department_id</th>
-			<th>photo</th>
+			<th>board_no</th>
+			<th>title</th>
+			<th>content</th>
+			<th>writer</th>
+			<th>write_date</th>
+			<th>click_cnt</th>
+			<th>image</th>
 		</tr>
 		<tr>
-			<td th:text="${empInfo.employeeId}"></td>
-			<td th:text="${empInfo.firstName}"></td>
-			<td th:text="${empInfo.lastName}"></td>
-			<td th:text="${empInfo.email}"></td>
-			<td th:text="${empInfo.phoneNumber}"></td>
-			<td th:text="${empInfo.hireDate}"></td>
-			<td th:text="${empInfo.jobId}"></td>
-			<td th:text="${empInfo.salary}"></td>
-			<td th:text="${empInfo.managerId}"></td>
-			<td th:text="${empInfo.departmentId}"></td>
-			<td th:text="${empInfo.photo}"></td>
+			<td th:text="${boardInfo.boardNo}"></td>
+			<td th:text="${boardInfo.title}"></td>
+			<td th:text="${boardInfo.content}"></td>
+			<td th:text="${boardInfo.writer}"></td>
+			<td th:text="${#dates.format(boardInfo.writeDate, 'yyyy.MM.dd')}"></td>
+			<td th:text="${boardInfo.clickCnt}"></td>
+			<td th:text="${boardInfo.image}"></td>
 		</tr>
 	</table>
+	<a th:href="@{/board/update/{boardNo}(boardNo=${boardInfo.boardNo})}"><button>수정</button></a>
+	<!-- <button th:onclick="|location.href='@{`/board/update/${boardInfo.boardNo}`}'|">수정</button> -->
 </body>
 </html>
 
@@ -48,5 +42,3 @@ th {
 }
 
 </style>
-</body>
-</html>

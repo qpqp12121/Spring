@@ -1,9 +1,9 @@
 package com.example.demo.board.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import com.example.demo.board.BoardVO;
 import com.example.demo.emp.EmpVO;
@@ -13,19 +13,22 @@ import com.example.demo.board.BSearchVO;
 public interface BoardMapper {
 
 	//게시글 검색(+페이징)
-	List<BoardVO> getBoardList(BoardVO vo, BSearchVO svo);
+	public List<BoardVO> getBoardList(BoardVO bvo, BSearchVO svo);
+	//전체건수
+	public int getCount(BoardVO bvo, BSearchVO svo); //count에도 조건절 걸어놔서 boardvo, bsearchvo 다 넘겨줘야 됨 아니면 getproperty오류
+	
 	
 	//단건조회
-	BoardVO getBoardInfo(int boardNo);
+	public BoardVO getBoardInfo(int boardNo);
 	
 	//등록
-	int insertBoard(BoardVO vo);
+	public int insertBoard(BoardVO vo);
 	
 	//수정
-	int updateBoard(BoardVO vo);
+	public int updateBoard(BoardVO vo);
 	
 	//삭제
-	int deleteBoard(int boardNo);
+	public int deleteBoard(int boardNo);
 
 	
 	

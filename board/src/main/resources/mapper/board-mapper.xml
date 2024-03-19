@@ -6,17 +6,24 @@
 	<!-- 동적쿼리 -->
 	<sql id="condition">
 		<where>
-			<if test="vo.title != null">
-				title LIKE '%${vo.title}%'
+			<if test="bvo.title != null and bvo.title != ''">
+				title LIKE '%${bvo.title}%'
 			</if>
-			<if test="vo.content != null">
-				content LIKE '%${vo.content}%'
+			<if test="bvo.content != null and bvo.content != ''">
+				content LIKE '%${bvo.content}%'
 			</if>
-			<if test="vo.writer != null">
-				writer LIKE '%${vo.writer}%'
+			<if test="bvo.writer != null and bvo.writer != ''">
+				writer LIKE '%${bvo.writer}%'
 			</if>
 		</where>
 	</sql>
+	
+	<!-- 페이징하기 위해 전체건수 구하기 -->
+	<select id="getCount" resultType="int">
+		SELECT COUNT(*)
+		FROM board
+		<include refid="condition"></include>
+	</select>
 	
 	<!-- 게시글 검색(+페이징) -->
 	<select id="getBoardList" resultType="BoardVO">
@@ -51,28 +58,29 @@
 				   resultType="int">
 			SELECT board_no_seq.nextval FROM dual
 		</selectKey>
-		INSERT INTO board ( board_no
-						   , title
-						   , content
-						   , writer
-						   , write_date
-						   , click_cnt
-						   , image
-						  )
-		VALUES( #{boardNo}
-			  , #{title}
-			  , #{content}
-			  , #{writer}
-			  , #{writeDate}
-			  , #{clickCnt}
-			  , #{image}
-			  )
+		INSERT INTO board 
+			( board_no
+		    , title
+		    , content
+		    , writer
+		    , image
+		    )
+		VALUES
+			( #{boardNo}
+			, #{title}
+			, #{content}
+			, #{writer}
+			, #{image}
+			)
 	</insert>
 	
 	<!-- 수정 -->
 	<update id="updateBoard" parameterType="BoardVO">
 		UPDATE board
-		SET content = #{content}
+		SET board_no = ${boardNo}
+			title = ${title}
+			content = #{content}
+			writer = #{writer}
 		WHERE board_no = #{boardNo}
 	</update>
 	
