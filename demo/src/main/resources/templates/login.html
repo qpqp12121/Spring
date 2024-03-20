@@ -12,8 +12,10 @@
         <div th:if="${param.logout}">
             You have been logged out.
         </div>
-        <form th:action="@{/login}" method="post">
-            <div><label> User Name : <input type="text" name="username"/> </label></div>
+        <!-- 커스터마이징했으면 WebSecurityConfig에서 변경된 걸 알려주기 (참고) -->
+        <!-- <form th:action="@{/login}" method="post"> -->
+        <form th:action="@{/userlogin}" method="post">
+            <div><label> User Name : <input type="text" name="userid"/> </label></div> <!-- name="username" -->
             <div><label> Password: <input type="password" name="password"/> </label></div>
             <div><input type="submit" value="Sign In"/></div>
         </form>

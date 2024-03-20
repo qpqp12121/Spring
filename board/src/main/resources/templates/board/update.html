@@ -11,7 +11,8 @@
 		글번호 <input name="boardNo" th:value="${board.boardNo}" readonly> <br><br>
 		제목 <input name="title" th:value="${board.title}"> <br><br>
 		작성자 <input name="writer" th:value="${board.writer}"> <br><br>
-		<textarea name="content" th:text="${board.content}" cols="30" rows="5"></textarea><br><br>
+		글내용 <input name="content" th:value="${board.content}"> <br><br>
+		<!-- <textarea name="content" th:text="${board.content}" cols="30" rows="5"></textarea><br><br> -->
 		<!-- 첨부파일 <input type="file" name="imagefile" th:text="${board.image}"> --> <!-- name이랑 필드명 같으면 안 됨!!! --><br><br>
 		<button>등록</button>
 	</form>

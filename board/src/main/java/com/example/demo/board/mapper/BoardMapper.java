@@ -22,10 +22,10 @@ public interface BoardMapper {
 	public BoardVO getBoardInfo(int boardNo);
 	
 	//등록
-	public int insertBoard(BoardVO vo);
+	public int insertBoard(BoardVO bvo);
 	
 	//수정
-	public int updateBoard(BoardVO vo);
+	public int updateBoard(BoardVO bvo);
 	
 	//삭제
 	public int deleteBoard(int boardNo);

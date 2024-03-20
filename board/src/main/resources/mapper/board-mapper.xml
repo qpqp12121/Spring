@@ -18,6 +18,23 @@
 		</where>
 	</sql>
 	
+		<sql id="updateCondition">
+			<where>
+				<if test="boardNo == null and boardNo == ''">				
+					board_no = #{boardNo}
+				</if>
+				<if test="title == null and title == ''">
+					AND title = #{title}
+				</if>
+				<if test="content == null and content == ''">
+					AND content = #{content}
+				</if>
+				<if test="writer == null and writer == ''">
+					AND writer = #{writer}
+				</if>
+			</where>
+	</sql>
+	
 	<!-- 페이징하기 위해 전체건수 구하기 -->
 	<select id="getCount" resultType="int">
 		SELECT COUNT(*)
@@ -77,10 +94,9 @@
 	<!-- 수정 -->
 	<update id="updateBoard" parameterType="BoardVO">
 		UPDATE board
-		SET board_no = ${boardNo}
-			title = ${title}
-			content = #{content}
-			writer = #{writer}
+		SET title = #{title}
+			,content = #{content}
+			,writer = #{writer}
 		WHERE board_no = #{boardNo}
 	</update>
 	

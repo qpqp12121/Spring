@@ -94,23 +94,29 @@ public class BoardController {
 	
 	//수정 처리
 	@PostMapping("/update")
-	public String update(BoardVO bvo, MultipartFile imagefile) throws IllegalStateException, IOException {
-			
-			if(imagefile != null) {
-				//파일생성
-				File file = new File("c:/upload", imagefile.getOriginalFilename());
-				//파일저장
-				imagefile.transferTo(file); //예외처리
-				
-				System.out.println("파일명: " + imagefile.getOriginalFilename());
-				System.out.println("파일크기: " + imagefile.getSize());
-				
-				//파일이름 photo필드에 담기
-				bvo.setImage(imagefile.getOriginalFilename());
-				service.updateBoard(bvo);
-			}			
-			return "redirect:/board/list";
-		}
+	public String update(BoardVO bvo) {
+		service.updateBoard(bvo);
+		return "redirect:/board/list";
+	}
+//	@PostMapping("/update")
+//	public String update(BoardVO bvo, MultipartFile imagefile) throws IllegalStateException, IOException {
+//			
+//			if(imagefile != null) {
+//				//파일생성
+//				File file = new File("c:/upload", imagefile.getOriginalFilename());
+//				//파일저장
+//				imagefile.transferTo(file); //예외처리
+//				
+//				System.out.println("파일명: " + imagefile.getOriginalFilename());
+//				System.out.println("파일크기: " + imagefile.getSize());
+//				
+//				//파일이름 photo필드에 담기
+//				bvo.setImage(imagefile.getOriginalFilename());
+//				service.updateBoard(bvo);
+//			}
+//			return "redirect:/board/list";
+//		}
+
 
 	
 	//삭제

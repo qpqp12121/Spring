@@ -80,31 +80,49 @@ public class EmpController {
 	
 	
 	//등록페이지 이동
-	@GetMapping("/emp/insert")
-	public void insert() { }
+//	@GetMapping("/emp/insert")
+//	public void insert() { }
 	
 	//등록 처리 --> photo employees 테이블에 photo 컬럼 추가
+//	@PostMapping("/insert")
+//	public String insert(@ModelAttribute("emp") EmpVO vo, @RequestParam(name="photofile") MultipartFile photo) throws IllegalStateException, IOException {
+//		System.out.println(vo);                           //input name이랑 필드명이랑 같으면 XX 못 찾아감!!
+//		
+//		if(photo != null) {
+//			if(photo.getSize() > 0) {
+//				String photoName = photo.getOriginalFilename(); //파일명 변수에 담음
+//				//파일생성
+//				File file = new File("d:/upload", photo.getOriginalFilename());
+//				//파일저장
+//				photo.transferTo(file);//정보출력
+//				
+//				System.out.println("파일명: " + photo.getOriginalFilename());
+//				System.out.println("파일크기: " + photo.getSize());
+//				
+//				vo.setPhoto(photoName); //파일이름을 photo필드에 담아야 되니 set (자주쓰려면변수로선언해도되고)
+//				empService.insertEmp(vo);
+//			}
+//		}
+//		return "redirect:/emp/list";
+//	}
+
+//=====================================
+	@GetMapping("/insert")
+	public void insert() {}
+	
 	@PostMapping("/insert")
-	public String insert(@ModelAttribute("emp") EmpVO vo, @RequestParam(name="photofile") MultipartFile photo) throws IllegalStateException, IOException {
-		System.out.println(vo);                           //input name이랑 필드명이랑 같으면 XX 못 찾아감!!
+	public ModelAndView insert(@ModelAttribute("emp")EmpVO vo) {
+		System.out.println(vo);
+		empService.insertEmp(vo);
 		
-		if(photo != null) {
-			if(photo.getSize() > 0) {
-				String photoName = photo.getOriginalFilename(); //파일명 변수에 담음
-				//파일생성
-				File file = new File("d:/upload", photo.getOriginalFilename());
-				//파일저장
-				photo.transferTo(file);//정보출력
-				
-				System.out.println("파일명: " + photo.getOriginalFilename());
-				System.out.println("파일크기: " + photo.getSize());
-				
-				vo.setPhoto(photoName); //파일이름을 photo필드에 담아야 되니 set (자주쓰려면변수로선언해도되고)
-				empService.insertEmp(vo);
-			}
-		}
-		return "redirect:/emp/list";
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("hello"); //등록 성공시 나올 html파일
+		mv.addObject("insertResult", "success");
+		//mv.setStatus(HttpStatus.INTERNAL_SERVER_ERROR); //이렇게 상태값 넘길 거 아니면 굳이 ModelAndView 쓸 필요 x ?
+		return mv;
 	}
+//====================================
+	
 	
 	//단건조회
 	@GetMapping("/info/{empId}") //empList 목록에서 조회?수정버튼 눌렀을 때 목록의 form태그 조건 다 가지고 넘어가게 할 것
@@ -134,7 +152,6 @@ public class EmpController {
 	}
 	
 
-	
 
 //	@RequestMapping("update")
 //	@ResponseBody	     //request.getParameter랑 같음(아래)
