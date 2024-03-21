@@ -25,8 +25,9 @@ public class EmpRestController {
 	//@Autowired EmpMapper mapper;
 	@Autowired EmpService service;
 	
+	
+//< 리스트 페이지 이동 >
 // 1.@Controller랑 @ResponseBody 같이 사용하는 경우
-	//리스트 페이지 이동
 //	@GetMapping("/empMng")
 //	public void empMng() { } //ajax는 페이지이동 따로 (데이터가지고 X)
 		
@@ -39,6 +40,7 @@ public class EmpRestController {
 //		return mapper.getEmpList(vo, svo);
 //	}
 
+	
 // 2.@RestController 하나로 통합하여 사용 (리스트 페이지 ModelAndView타입으로 해야 뷰 페이지로 이동)
 	//리스트페이지 이동
 	@GetMapping("/empMng")
@@ -51,15 +53,17 @@ public class EmpRestController {
 	public Map<String,Object> empList(EmpVO vo, SearchVO svo, Paging pvo) { //페이지응답은 return타입 "페이지명"이라 무조건 public String 메서드명(){}인데 ajax응답은 return 데이터에 맞게 설정	
 		svo.setStart(pvo.getFirst());
 		svo.setEnd(pvo.getLast());
+		
 		Map<String,Object> map = service.getEmpList(vo, svo);
 		pvo.setTotalRecord((Long)map.get("count"));
+		
 		map.put("paging", pvo);
 		
 		return map; //EmpController에선 model.add안해도넘어갔는데 ajax는 X=> return한 거만 넘어감
 	}
 	
 //================================================================	
-	//사원등록
+//< 사원등록 >
 	//1.queryString으로 먼저 , 2.formData
 //	@PostMapping("/ajax/emp")
 //	public EmpVO save(EmpVO vo) { 

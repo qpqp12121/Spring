@@ -4,6 +4,12 @@
 
 <mapper namespace="com.example.demo.board.mapper.ReplyMapper">
 
+<!-- 페이징위해서 전체건수 구하기 -->
+	<select id="getCount" resultType="int">
+		SELECT COUNT(*)
+		FROM tbl_reply
+	</select>
+
 <!-- 댓글목록 +페이징 -->
 	<select id="getReplyList" resultType="ReplyVO">
 		SELECT * FROM ( SELECT ROWNUM AS rn, a.* FROM (
@@ -20,25 +26,6 @@
 			
 		) a WHERE ROWNUM <![CDATA[<= #{svo.end} ) b WHERE rn >= #{svo.start}]]>
 	</select>
-<!-- 댓글목록 -->
-	<!-- <select id="getReplyList" resultType="ReplyVO">
-			SELECT rno
-				 , bno
-				 , reply
-				 , replyer
-				 , replyDate
-				 , updateDate
-			FROM tbl_reply
-			WHERE bno = #{bno}
-			ORDER BY rno desc
-	</select> -->
-	
-<!--  	<select id="getReplyList" resultType="ReplyVO">
-			SELECT *
-			FROM tbl_reply
-			WHERE bno = #{bno}
-			ORDER BY rno desc
-	</select> -->
 	
 
 <!-- 단건조회(상세) -->
@@ -67,6 +54,15 @@
 			, #{replyer}
 			)
 	</insert>
+
+
+<!-- 수정 -->
+	<update id="updateReply" parameterType="ReplyVO">
+		UPDATE tbl_reply
+		SET reply = #{reply}
+		WHERE rno = #{rno}
+	</update>
+
 
 <!-- 삭제 -->	
 	<delete id="deleteReply" parameterType="int">

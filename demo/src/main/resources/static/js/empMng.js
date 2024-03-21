@@ -39,7 +39,7 @@ var empService = (function() {
 		//목록출력
 		emplist.innerHTML = '';
 		
-		for(empObj of res.data) {
+		for(empObj of res.data) { //controller에서 목록 넘기는 거 "data"로 넘김(데이터건수는 "count"로)
 			emplist.innerHTML += makeTr(++i, empObj);
 		}
 		

@@ -9,7 +9,7 @@
  	<table>
 		<thead>
 			<tr>
-				<!-- <th>NO.</th> -->
+				<th>NO</th>
 				<th>글번호</th>
 				<th>댓글내용</th>
 				<th>작성자</th>
@@ -30,8 +30,9 @@
 		</tbody>
 	</table>
 	
-	<!-- 페이징 타임리프말고 하는 거 찾아보기 -->
-	5건씩 최신순으로 정렬(페이징넣기)
+
+	<!-- 페이징 -->
+	<div id="nav"></div>
 	
 	<br><br>
 	
@@ -42,44 +43,45 @@
 		작성자 <input name="replyer"><br><br>
 		<textarea name="reply" cols="30" rows="5"></textarea><br><br>
 		<button type="button" onclick="saveReq()">등록</button>
+		<button type="button" onclick="updateReq()">수정</button>
 	</form>
  
  
 <script>
 //댓글리스트 요청
-listReq();
+listReq(1);
 
 //댓글리스트 함수로 (등록삭제 등 처리 후 append로 후처리 못하겠으면 리스트만 다시 재로드)
-function listReq() {
-	replylist.innerHTML = "";
+function listReq(p) {
+	//replylist.innerHTML = "";
 	//아직bno 연결X
 	let bno = 1;
 	//fetch("/replyList?bno="+1)
-	fetch(`/replyList?bno=${bno}`)
+	fetch(`/replyList?bno=${bno}&page=${p}`)
 	.then(res => res.json())
 	.then(res => listRes(res));
 }
-/* function listReq() {
-	//아직bno 연결X
-	//fetch(`/replyList/${bno}`)
-	fetch("/reply/list/"+1)
-	.then(res => res.json())
-	.then(res => listRes(res));
-} */
-/* function listReq() {
-	fetch("/replyList")
-	.then(res => res.json())
-	.then(res => listRes(res));
-} */
 
 //댓글리스트 응답
 function listRes(res) {
-	//console.log(res);
+	console.log(res);
 	
-	for(obj of res) {
+	let i=0; //NO.
+	replylist.innerHTML = '';
+	
+	for(obj of res.list) {
 		//table body 삽입
-		let newTag = 
+		 replylist.innerHTML += makeTr(++i, obj);
+	}
+	
+	//페이징 처리
+	nav.innerHTML = makePage(res.paging)
+}
+//+댓글리스트 응답의 for문 안에 있던 tr,td태그 별도의 함수로 생성
+function makeTr(i, obj) {
+	let newTag = 
 		`<tr>
+			<td>${i}</td>
 			<td>${obj.bno}</td>
 			<td onclick="infoReq(${obj.rno})">${obj.reply}</td>
 			<td>${obj.replyer}</td>
@@ -87,10 +89,36 @@ function listRes(res) {
 			<td>${dateFormat(obj.updateDate)}</td>
 			<td><button type="button" onclick="deleteReq(${obj.rno})">삭제</button></td>
 		 </tr>`
-		 
-		 replylist.innerHTML += newTag;
-	}
+	return newTag;
 }
+//페이징
+function makePage(paging) {
+	let tag = `<nav aria-label="...">
+		  <ul id="ust">`
+	//이전버튼
+	if(paging.startPage > 1) {
+		tag += `<li> 
+	        <a class="page-link" href="javascript:gopage(${paging.startPage-1})">Previous</a></li>`
+	}
+	//페이지번호	  
+	for(num=paging.startPage; num <= paging.endPage; num++) { //num: 페이지번호
+		tag += `<li>
+	        <a class="page-link" href="javascript:gopage(${num})">${num}</a></li>`
+	}
+	//다음버튼
+	if(paging.endPage < paging.lastPage) { // <= 에서 고쳐서 Next안보임
+		tag += `<li>
+	        <a class="page-link" href="javascript:gopage(${paging.endPage+1})">Next</a></li>`
+	}
+	tag += `</ul>
+		</nav>`
+	return tag;
+}
+function gopage(p){
+	listReq(p)
+}
+
+
 //날짜format
 function dateFormat(dt) {
 		//console.log(dt);
@@ -105,17 +133,8 @@ function dateFormat(dt) {
 		
 		return `${year}.${month}.${day}`;
 }
-//페이징
-/* function gopage(p){
-	frmSearch.page.value = p; //넘겨줄 값 여러 개면 form으로 넘겨주기
-	frmSearch.submit();
-}
 
-function init() {
-	frmSearch.departmentId.value=""
-	frmSearch.firstName.value=""
-	frmSearch.managerId.value=""
-} */
+//=========================================================
 
 //등록요청
 function saveReq() {
@@ -138,7 +157,10 @@ function saveReq() {
 
 //등록응답
 function saveRes(res) {
-	listReq();
+	frm.bno.value = '';
+	frm.reply.value = '';
+	frm.replyer.value = '';
+	listReq(1);
 }
 
 //======================================================
@@ -158,6 +180,31 @@ function infoRes(res) {
 }
 
 //======================================================
+//수정요청
+function updateReq() {
+	let param = frm.reply.value
+	fetch("/reply/update", { 
+		method : "post",
+		headers: {
+			"Content-Type": "application/json",
+		    },
+		body : JSON.stringify(param)
+		
+	})
+	.then(res => res.json())
+	.then(res => saveRes(res))
+}
+
+//수정응답
+function updateRes(res) {
+	frm.bno.value = '';
+	frm.reply.value = '';
+	frm.replyer.value = '';
+	listReq(1);
+}	
+	
+
+//======================================================
 //삭제 요청
 function deleteReq(rno) {
 	console.log(rno);
@@ -168,7 +215,7 @@ function deleteReq(rno) {
 
 //삭제 응답
 function deleteRes(res) {
-	listReq();
+	listReq(1);
 }
 
 </script>
@@ -187,5 +234,13 @@ table, th, td {
 th {
 	background: #eee
 }
+
+/* 페이징번호 */
+ul li {
+	list-style-type: none;
+	float: left;
+	padding: 2px;
+}
+
 
 </style>
