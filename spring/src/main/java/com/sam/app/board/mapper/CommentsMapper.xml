@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sam.app.board.mapper.CommentsMapper">
+	<insert id="insertComments" 
+	     parameterType="com.sam.app.board.service.CommentsVO">
+	     <selectKey keyProperty="seq" resultType="string" order="BEFORE" >
+	     	SELECT nvl(max(SEQ),0)+1 FROM COMMENTS
+	     </selectKey>
+	     INSERT INTO COMMENTS (	SEQ,
+	     						NAME,
+	     						CONTENT,
+	     						BOARDSEQ,
+	     						REGDATE )
+	     				VALUES (#{seq},
+	     						#{name},
+	     						#{content},
+	     						#{boardSeq},
+	     						sysdate
+	     				)
+	</insert>
+	<update id="updateComments" 
+	     parameterType="com.sam.app.board.service.CommentsVO">
+	     UPDATE COMMENTS SET	NAME=#{name},
+	     						CONTENT=#{content}
+	     				WHERE   SEQ = #{seq}
+	</update>
+	<delete id="deleteComments" 
+	     parameterType="com.sam.app.board.service.CommentsVO">
+	     DELETE COMMENTS 
+	      WHERE SEQ = #{seq}
+	</delete>
+	<!-- 전체조회 (게시글에 해당하는 댓글만 조회) -->
+	<select id="getCommentsList" 
+	        resultType="com.sam.app.board.service.CommentsVO">
+		SELECT *
+		  FROM COMMENTS	
+		 WHERE BOARDSEQ = #{boardSeq} 	  
+	</select>
+	<!-- 단건조회  -->
+	<select id="getComments" 
+	        resultType="com.sam.app.board.service.CommentsVO">
+		SELECT *
+		  FROM COMMENTS	
+		 WHERE SEQ = #{seq} 	  
+	</select>	
+</mapper>

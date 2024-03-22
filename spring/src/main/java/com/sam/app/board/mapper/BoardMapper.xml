@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sam.app.board.mapper.BoardMapper">
+
+	<select id="getBoard" parameterType="string" resultType="com.sam.app.board.service.BoardVO">
+		SELECT seq, title, writer, content, regdate, cnt , uploadfile
+		FROM board2
+		WHERE seq = #{seq}
+	</select>
+
+	<select id="getBoardList" resultType="map">
+		select a.* from ( select rownum rn , b.* from (
+	  	  SELECT seq, title, writer, content, regdate, cnt 
+		    FROM board2
+		) b  ) a where rn between #{first} and #{last}		
+	</select>
+	
+	<select id="getCount" resultType="int">
+		select count(*) from board2
+	</select>
+
+	<insert id="insertBoard">
+		<selectKey keyProperty="seq" resultType="string" order="BEFORE">
+			select nvl(max(seq),0)+1 from board2
+		</selectKey>
+		insert into board2(seq, title, content, writer, regdate, cnt
+		<if test="uploadfile != null and uploadfile != '' ">
+		        , uploadfile
+		</if>
+		) values (#{seq}, #{title}, #{content}, #{writer}, 
+		         trunc(sysdate), 0
+		<if test="uploadfile != null and uploadfile != '' ">
+		         , #{uploadfile}
+		</if>         
+		          ) 
+	</insert>
+	
+	<update id="updateBoard">
+		update board2
+		   set content = #{content}
+		 where seq = #{seq} 
+	</update>
+	
+
+</mapper>
