@@ -2,6 +2,8 @@ package com.example.demo.board;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -23,7 +25,6 @@ public class BoardVO {
 	 String title;
 	 String content;
 	 String writer;
-	 //@DateTimeFormat(pattern = "yyyy.MM.dd")
 	 Date writeDate;
 	 int clickCnt;
 //	 String image="없음";
