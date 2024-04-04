@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <button type="button" id="btnAdd">행추가</button>
+  <button type="button" id="btnDelete">행삭제</button>
+  <button type="button" id="btnSave">저장</button>
+  <div id="gridDiv"></div>
+  
+  <script src="grid_data.js"></script>
+  <script>
+    //const gridData = []
+    btnAdd.addEventListener("click", function(){
+      grid.appendRow({grade:"1"});
+    })
+    btnSave.addEventListener("click", function(){
+      grid.blur();
+    })
+    btnDelete.addEventListener("click", function(e){
+      let rowKey = grid.getFocusedCell().rowKey;
+      console.log(rowKey)
+      grid.removeRow(rowKey)
+    })   
+    var Grid = tui.Grid;
+    class CustomTextEditor {
+      constructor(props) {
+        const el = document.createElement('input');
+        const { maxLength } = props.columnInfo.editor.options;
+
+        el.type = 'text';
+        el.maxLength = maxLength;
+        el.value = String(props.value);
+
+        this.el = el;
+      }
+
+      getElement() {
+        return this.el;
+      }
+
+      getValue() {
+        return this.el.value;
+      }
+
+      mounted() {
+        this.el.select();
+      }
+    }
+/*
+    class CustomRadioRenderer {
+      constructor(props) {
+        const v = String(props.value);
+
+        const el1 = document.createElement('input');
+        el1.type = 'radio';
+        el1.name = 'r1';
+        el1.value = '1'
+        //if( v == 1 || v==2 )
+          el1.setAttribute("checked", true)
+
+        const el2 = document.createElement('input');
+        el2.type = 'radio';
+        el2.name = 'r1';
+        el2.value = '2'
+ 
+
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(v))
+        div.appendChild(el1)
+        div.appendChild(document.createTextNode("YES"))
+        div.appendChild(el2)
+        div.appendChild(document.createTextNode("NO"))
+        this.el = div;
+        this.render(props);
+      }
+
+      getElement() {
+        return this.el;
+      }
+
+      render(props) {
+
+      }
+    }
+*/
+    class CustomTextRenderer {
+      constructor(props) {
+        // const div = document.createElement('div'); //안에 변경해도 됨
+        const div = document.createElement('span');
+        div.className = "tootip";
+        div.style.backgroundColor = 'yellow';
+
+        this.el = div;
+        this.render(props);
+      }
+
+      getElement() {
+        return this.el;
+      }
+
+      render(props) {
+        this.el.innerText = String(props.value);
+      }
+    }   
+
+    const grid = new tui.Grid({
+      el: document.getElementById('gridDiv'),
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: 'Name',
+          name: 'name',
+          editor: 'text'
+        },
+        {
+          header: 'Artist',
+          name: 'artist',
+          renderer: {
+            type: CustomTextRenderer
+          },
+          editor: {
+            type: CustomTextEditor,
+            options: {
+              maxLength: 10
+            }
+          }
+        },
+        {
+          header: 'Type',
+          name: 'typeCode',
+          formatter: 'listItemText',
+          editor: {
+            type: 'select',
+            options: {
+              listItems: [
+                { text: 'Deluxe', value: '1' },
+                { text: 'EP', value: '2' },
+                { text: 'Single', value: '3' }
+              ]
+            }
+          }
+        },
+        {
+          header: 'Genre',
+          name: 'genreCode',
+          formatter: 'listItemText',
+          editor: {
+            type: 'checkbox',
+            options: {
+              listItems: [
+                { text: 'Pop', value: '1' },
+                { text: 'Rock', value: '2' },
+                { text: 'R&B', value: '3' },
+                { text: 'Electronic', value: '4' },
+                { text: 'etc.', value: '5' }
+              ]
+            }
+          },
+          copyOptions: {
+            useListItemText: true // when this option is used, the copy value is concatenated text
+          }
+        },
+        {
+          header: 'Grade',
+          name: 'grade',
+          copyOptions: {
+            useListItemText: true
+          },
+          formatter: 'listItemText',
+          editor: {
+            type: 'radio',
+            options: {
+              listItems: [
+                { text: 'Yes', value: '1' },
+                { text: 'No', value: '2' }
+              ]
+            }
+          }
+        }
+      ]
+    });
+    grid.on('beforeChange', ev => {
+      console.log('before change:', ev);
+    });
+    grid.on('afterChange', ev => {
+      console.log('after change:', ev);
+    })
+    grid.resetData(gridData);
+  </script>
+</body>
+</html>
